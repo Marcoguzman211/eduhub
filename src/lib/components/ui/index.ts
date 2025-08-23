@@ -8,3 +8,6 @@ export * from "./avatar";
 export * from "./card";
 export * from "./badge";
 export * from "./section";
+export * from "./nav-bar";
+export * from "./dropdown";
+export * from "./link";
