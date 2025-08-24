@@ -22,7 +22,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable}`}>
-      <body>
+      <body className="mx-auto max-w-[1440px]">
         <TRPCReactProvider>
           <MainNavBar />
           {children}

@@ -1,3 +1,1 @@
-"use client";
-import { Button as HButton } from "@heroui/react";
-export { HButton as Button };
+export { Button, type ButtonProps } from "@heroui/button";
