@@ -2,7 +2,7 @@ import { Button } from "~/lib/components/ui";
 
 export default function HomeCta() {
   return (
-    <div className="bg-muted bg-primary flex flex-col items-center gap-6 rounded-2xl px-4 py-16 text-center shadow-sm transition-shadow hover:shadow-md sm:px-6 lg:px-8">
+    <div className="bg-muted bg-primary flex h-[25dvh] flex-col items-center justify-between gap-4 px-4 py-16 text-center sm:px-6 lg:px-8">
       <h3 className="text-4xl font-bold text-white">
         Partagez vos idées, inspirez vos collègues
       </h3>
