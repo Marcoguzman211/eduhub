@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../../../lib/components/ui";
+import { Button } from "~/lib/components/ui";
 
 export default function Hero() {
   return (
     <section
-      className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"
+      className="relative px-4 py-16 sm:px-6 lg:px-8"
       aria-labelledby="hero-heading"
     >
       <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-12">
