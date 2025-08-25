@@ -1,11 +1,13 @@
+import CommunityActivitySection from "./_components/community-activity-section";
 import Hero from "./_components/hero";
-import PopularRessources from "./_components/popular-ressources";
+import PopularRessourcesSection from "./_components/popular-ressources-section/popular-ressources-section";
 
 export default async function Home() {
   return (
     <>
       <Hero />
-      <PopularRessources />
+      <PopularRessourcesSection />
+      <CommunityActivitySection />
     </>
   );
 }

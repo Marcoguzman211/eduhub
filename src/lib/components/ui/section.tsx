@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 
-import { cn } from "../../cn";
+import { cn } from "~/lib/cn";
 
 export type SectionType = ComponentProps<"div"> & {
   rounded?: "lg" | "2xl";
