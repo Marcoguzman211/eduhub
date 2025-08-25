@@ -1,6 +1,7 @@
 import CommunityActivitySection from "./_components/community-activity-section";
 import Hero from "./_components/hero";
 import PopularRessourcesSection from "./_components/popular-ressources-section/popular-ressources-section";
+import TestimonialsSection from "./_components/testimonials-section";
 
 export default async function Home() {
   return (
@@ -8,6 +9,7 @@ export default async function Home() {
       <Hero />
       <PopularRessourcesSection />
       <CommunityActivitySection />
+      <TestimonialsSection />
     </>
   );
 }
