@@ -31,7 +31,7 @@ export default function MainNavBar() {
   const { data: session, isLoading } = api.session.getSession.useQuery();
 
   return (
-    <Navbar>
+    <Navbar maxWidth="full">
       <NavbarBrand>
         <AcmeLogo />
         <p className="font-bold text-inherit">EDUHUB</p>
