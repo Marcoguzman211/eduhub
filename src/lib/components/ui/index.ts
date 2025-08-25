@@ -11,3 +11,4 @@ export * from "./section";
 export * from "./nav-bar";
 export * from "./dropdown";
 export * from "./link";
+export * from "./chip";
