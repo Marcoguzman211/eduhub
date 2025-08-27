@@ -1,1 +1,1 @@
-export { Card, CardBody, CardHeader } from "@heroui/react";
+export { Card, CardBody, CardHeader, CardFooter } from "@heroui/react";

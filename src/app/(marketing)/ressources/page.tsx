@@ -1,4 +1,7 @@
 import RessourcesFilter from "./components/filter";
+import { ResourceCard } from "./components/ressource-card";
+import ResourceToolbar from "./components/toolbar";
+import { items } from "./mock-data/ressources-list-data";
 
 export default function ResourcesPage() {
   return (
@@ -11,12 +14,16 @@ export default function ResourcesPage() {
       <main className="flex flex-1 flex-col gap-6">
         {/* Search */}
         <section className="flex-1/3 rounded-md bg-gray-100 p-4">
-          Search
+          <ResourceToolbar />
         </section>
 
         {/* Results */}
         <section className="flex-2/3 rounded-md bg-gray-100 p-4">
-          Results
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 p-4 md:grid-cols-3">
+            {items.map((item, i) => (
+              <ResourceCard key={i} {...item} />
+            ))}
+          </div>
         </section>
       </main>
     </div>
