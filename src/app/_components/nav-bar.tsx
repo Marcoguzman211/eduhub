@@ -39,7 +39,7 @@ export default function MainNavBar() {
 
       <NavbarContent className="hidden gap-4 sm:flex" justify="center">
         <NavbarItem>
-          <Link color="foreground" href="#">
+          <Link color="foreground" href="/ressources">
             Ressources
           </Link>
         </NavbarItem>

@@ -12,3 +12,6 @@ export * from "./nav-bar";
 export * from "./dropdown";
 export * from "./link";
 export * from "./chip";
+export * from "./divider";
+export * from "./checkbox";
+export * from "./slider";
