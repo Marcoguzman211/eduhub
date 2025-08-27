@@ -36,7 +36,6 @@ export default function ResourceToolbar() {
         <div className="hidden justify-end md:col-span-3 md:flex lg:col-span-3">
           <Button
             color="primary"
-            radius="full"
             size="lg"
             startContent={<FiPlus className="h-5 w-5" />}
           >
