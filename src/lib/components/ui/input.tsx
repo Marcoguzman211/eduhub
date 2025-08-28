@@ -1,3 +1,2 @@
 "use client";
-import { Input as HInput } from "@heroui/react";
-export { HInput as Input };
+export { Input, Textarea } from "@heroui/react";
