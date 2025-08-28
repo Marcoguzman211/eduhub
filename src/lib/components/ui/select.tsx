@@ -1,2 +1,2 @@
 "use client";
-export { Select, SelectItem } from "@heroui/react";
+export { Select, SelectItem } from "@heroui/select";

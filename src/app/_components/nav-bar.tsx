@@ -34,7 +34,9 @@ export default function MainNavBar() {
     <Navbar maxWidth="full">
       <NavbarBrand>
         <AcmeLogo />
-        <p className="font-bold text-inherit">EDUHUB</p>
+        <Link href="/">
+          <p className="font-bold text-inherit">EDUHUB</p>
+        </Link>
       </NavbarBrand>
 
       <NavbarContent className="hidden gap-4 sm:flex" justify="center">
@@ -49,8 +51,8 @@ export default function MainNavBar() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="#">
-            FAQ
+          <Link color="foreground" href="/dashboard/my-resources">
+            Mes ressources
           </Link>
         </NavbarItem>
       </NavbarContent>
@@ -74,8 +76,12 @@ export default function MainNavBar() {
                 <p className="font-semibold">Connecté(e) en tant que</p>
                 <p className="font-semibold">{session.user.email}</p>
               </DropdownItem>
-              <DropdownItem key="settings">Configurations</DropdownItem>
-              <DropdownItem key="team_settings">Confidentialité</DropdownItem>
+              <DropdownItem key="settings">
+                <Link href="/dashboard">Configurations</Link>
+              </DropdownItem>
+              <DropdownItem key="my-profile">
+                <Link href="/dashboard/profile">Mon profil</Link>
+              </DropdownItem>
               <DropdownItem key="logout" color="danger">
                 <Link href="/api/auth/signout">Se déconnecter</Link>
               </DropdownItem>

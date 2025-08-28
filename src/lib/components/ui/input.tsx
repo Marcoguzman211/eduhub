@@ -1,2 +1,2 @@
 "use client";
-export { Input, Textarea } from "@heroui/react";
+export { Input, Textarea } from "@heroui/input";
