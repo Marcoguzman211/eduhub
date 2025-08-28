@@ -44,7 +44,7 @@ export default function MainNavBar() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link aria-current="page" color="primary" href="#">
+          <Link aria-current="page" color="primary" href="/upload">
             Publier
           </Link>
         </NavbarItem>
