@@ -1,0 +1,43 @@
+import type { ResourceCardProps } from "../components/ressource-card";
+
+export const items: ResourceCardProps[] = [
+  {
+    title: "Fiche d'exercices sur les accords du participe passé",
+    subject: "Grammaire",
+    level: "CM2",
+    rating: 4.7,
+    reviewsCount: 12,
+    downloads: 234,
+    durationMin: 45,
+    author: "Marie Dupont",
+    postedAgo: "il y a 2j",
+    fileType: "PDF",
+    thumbnailUrl: "/ressources/placeholder-1.png",
+  },
+  {
+    title: 'Séquence complète sur "Le Petit Prince"',
+    subject: "Littérature",
+    level: "6e",
+    rating: 4.6,
+    reviewsCount: 28,
+    downloads: 456,
+    durationMin: 480,
+    author: "Jean Martin",
+    postedAgo: "il y a 1sem",
+    fileType: "DOCX",
+    thumbnailUrl: "/ressources/placeholder-2.png",
+  },
+  {
+    title: "Diaporama interactif sur l'orthographe",
+    subject: "Orthographe",
+    level: "CE2",
+    rating: 4.5,
+    reviewsCount: 18,
+    downloads: 192,
+    durationMin: 30,
+    author: "Sophie L.",
+    postedAgo: "il y a 3j",
+    fileType: "PPTX",
+    thumbnailUrl: "/ressources/placeholder-3.png",
+  },
+];
