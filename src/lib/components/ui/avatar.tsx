@@ -1,3 +1,2 @@
 "use client";
-import { Avatar as HAvatar } from "@heroui/react";
-export { HAvatar as Avatar };
+export { Avatar } from "@heroui/avatar";

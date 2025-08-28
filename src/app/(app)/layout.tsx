@@ -9,7 +9,7 @@ export default async function ProtectedLayout({
 }) {
   const session = await auth();
   if (!session?.user) {
-    redirect("/");
+    redirect("/api/auth/signin");
   }
   return <>{children}</>;
 }
