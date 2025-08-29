@@ -43,7 +43,7 @@ export const authConfig = {
     DiscordProvider,
     GoogleProvider,
     Resend({
-      from: "onboarding@resend.dev",
+      from: "eduhub@marcoguzman.fr",
     }),
     /**
      * ...add more providers here.
