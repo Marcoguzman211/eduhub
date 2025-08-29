@@ -5,7 +5,7 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import Footer from "./_components/footer/footer";
-import MainNavBar from "./_components/nav-bar";
+import MainNavBar from "./_components/navbar/nav-bar";
 
 export const metadata: Metadata = {
   title: "Eduhub",
