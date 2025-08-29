@@ -1,3 +1,4 @@
+import Resend from "next-auth/providers/resend";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
@@ -41,6 +42,9 @@ export const authConfig = {
   providers: [
     DiscordProvider,
     GoogleProvider,
+    Resend({
+      from: "onboarding@resend.dev",
+    }),
     /**
      * ...add more providers here.
      *
