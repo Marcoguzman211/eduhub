@@ -15,3 +15,4 @@ export * from "./chip";
 export * from "./divider";
 export * from "./checkbox";
 export * from "./slider";
+export * from "./spacer";

@@ -71,12 +71,12 @@ export function NavShell({ session }: { session: Session }) {
                 <Link href="/dashboard/profile">Mon profil</Link>
               </DropdownItem>
               <DropdownItem key="logout" color="danger">
-                <Link href="/api/auth/signout">Se déconnecter</Link>
+                <Link href="/signout">Se déconnecter</Link>
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         ) : (
-          <Button as="a" href="/api/auth/signin" color="primary">
+          <Button as="a" href="/signin" color="primary">
             Se connecter
           </Button>
         )}
