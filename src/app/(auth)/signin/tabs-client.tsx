@@ -14,7 +14,10 @@ export default function AuthTabs({ onEmail, onGoogle, onDiscord }: Props) {
     <Tabs
       aria-label="Authentification"
       defaultSelectedKey="signin"
-      className="w-full"
+      classNames={{
+        tabList: "w-full flex", // tablist étendu
+        tab: "flex-1", // chaque onglet prend la même largeur
+      }}
     >
       <Tab key="signin" title="Se connecter">
         <form action={onEmail} className="grid gap-4 pt-4" noValidate>

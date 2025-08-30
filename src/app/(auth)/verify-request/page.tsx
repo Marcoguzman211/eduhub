@@ -12,7 +12,7 @@ export const metadata = { title: "Vérifiez votre email - TeacherHub" };
 export default function VerifyRequestPage() {
   return (
     <Card className="w-full max-w-md text-center">
-      <CardHeader>
+      <CardHeader className="flex flex-col gap-4">
         <div className="bg-foreground/5 mx-auto grid h-12 w-12 place-items-center rounded-xl">
           📩
         </div>
@@ -26,7 +26,7 @@ export default function VerifyRequestPage() {
         <p className="text-foreground/60 text-sm">
           Cliquez sur le lien dans votre boîte de réception pour continuer. Le
           lien peut expirer après quelques minutes. Pensez à vérifier vos
-          courriers indésirables.
+          courriers indésirables (SPAM).
         </p>
         <Link href="/signin">
           <Button className="w-full" variant="flat">
@@ -36,7 +36,7 @@ export default function VerifyRequestPage() {
       </CardBody>
 
       <CardFooter className="text-foreground/60 text-xs">
-        TeacherHub • Plateforme pour enseignants de français
+        Eduhub • La plateforme pour les enseignants en France
       </CardFooter>
     </Card>
   );

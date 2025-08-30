@@ -1,4 +1,4 @@
-import { signOut } from "../../../server/auth";
+import { signOut } from "~/server/auth";
 import {
   Card,
   CardHeader,
@@ -9,7 +9,7 @@ import {
 } from "../../../lib/components/ui";
 import Link from "next/link";
 
-export const metadata = { title: "Se déconnecter - TeacherHub" };
+export const metadata = { title: "Se déconnecter - EduHub" };
 
 export default function SignOutPage() {
   async function doSignOut() {
@@ -20,7 +20,7 @@ export default function SignOutPage() {
 
   return (
     <Card className="w-full max-w-md">
-      <CardHeader>
+      <CardHeader className="flex flex-col gap-4">
         <h1 className="text-xl font-semibold">Se déconnecter</h1>
         <p className="text-foreground/60 text-sm">
           Êtes-vous sûr de vouloir vous déconnecter ?
