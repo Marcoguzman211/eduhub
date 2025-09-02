@@ -3,7 +3,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "~/lib/components/ui";
 import Link from "next/link";
 import AuthTabs from "./tabs-client";
 
-export const metadata = { title: "Se connecter - TeacherHub" };
+export const metadata = { title: "Se connecter - EduHub" };
 
 export default async function SignInPage() {
   const callbackUrl = "/";
@@ -39,9 +39,9 @@ export default async function SignInPage() {
       <CardBody>
         {/* pass server actions into a small client component that renders NextUI Tabs */}
         <AuthTabs
-          onEmail={signInWithEmail}
-          onGoogle={signInGoogle}
-          onDiscord={signInDiscord}
+          onEmailAction={signInWithEmail}
+          onGoogleAction={signInGoogle}
+          onDiscordAction={signInDiscord}
         />
       </CardBody>
 

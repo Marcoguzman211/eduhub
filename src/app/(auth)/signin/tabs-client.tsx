@@ -3,24 +3,31 @@
 import React from "react";
 import { Tabs, Tab, Button, Input, Divider, Spacer } from "~/lib/components/ui";
 
+import type { ComponentProps } from "react";
+type FormAction = ComponentProps<"form">["action"];
+
 type Props = {
-  onEmail: (formData: FormData) => Promise<void>; // server action
-  onGoogle: () => Promise<void>; // server action
-  onDiscord: () => Promise<void>; // server action
+  onEmailAction: FormAction;
+  onGoogleAction: FormAction;
+  onDiscordAction: FormAction;
 };
 
-export default function AuthTabs({ onEmail, onGoogle, onDiscord }: Props) {
+export default function AuthTabs({
+  onEmailAction,
+  onGoogleAction,
+  onDiscordAction,
+}: Props) {
   return (
     <Tabs
       aria-label="Authentification"
       defaultSelectedKey="signin"
       classNames={{
-        tabList: "w-full flex", // tablist étendu
-        tab: "flex-1", // chaque onglet prend la même largeur
+        tabList: "w-full flex",
+        tab: "flex-1",
       }}
     >
       <Tab key="signin" title="Se connecter">
-        <form action={onEmail} className="grid gap-4 pt-4" noValidate>
+        <form action={onEmailAction} className="grid gap-4 pt-4" noValidate>
           <Input
             name="email"
             type="email"
@@ -39,7 +46,7 @@ export default function AuthTabs({ onEmail, onGoogle, onDiscord }: Props) {
         <Spacer y={4} />
 
         <div className="grid gap-3">
-          <form action={onGoogle}>
+          <form action={onGoogleAction}>
             <Button
               type="submit"
               variant="flat"
@@ -49,7 +56,7 @@ export default function AuthTabs({ onEmail, onGoogle, onDiscord }: Props) {
               Continuer avec Google
             </Button>
           </form>
-          <form action={onDiscord}>
+          <form action={onDiscordAction}>
             <Button
               type="submit"
               variant="flat"
@@ -64,7 +71,7 @@ export default function AuthTabs({ onEmail, onGoogle, onDiscord }: Props) {
 
       <Tab key="signup" title="Créer un compte">
         {/* Signup is implicit: same email flow */}
-        <form action={onEmail} className="grid gap-4 pt-4" noValidate>
+        <form action={onEmailAction} className="grid gap-4 pt-4" noValidate>
           <Input
             name="email"
             type="email"
@@ -86,12 +93,12 @@ export default function AuthTabs({ onEmail, onGoogle, onDiscord }: Props) {
         <Spacer y={4} />
 
         <div className="grid gap-3">
-          <form action={onGoogle}>
+          <form action={onGoogleAction}>
             <Button type="submit" variant="flat" className="w-full">
               Créer avec Google
             </Button>
           </form>
-          <form action={onDiscord}>
+          <form action={onDiscordAction}>
             <Button type="submit" variant="flat" className="w-full">
               Créer avec Discord
             </Button>
