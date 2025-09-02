@@ -1,0 +1,100 @@
+But : Expliquer à un LLM comment fonctionnent aujourd’hui l’authentification (signin, signup, signout) dans ce repo pour pouvoir itérer ensuite.
+
+Vue d’ensemble
+- Stack : Next.js App Router + NextAuth.js + Drizzle ORM (Postgres) + tRPC.
+- Type d’authentification : OAuth (Discord, Google) et Email magic link (Resend).
+- Persistance : tables NextAuth via Drizzle Adapter (users, accounts, sessions, verification_tokens).
+
+Où est configurée l’auth ?
+- Fichier de config NextAuth : `src/server/auth/config.ts`
+  - Providers enregistrés : DiscordProvider, GoogleProvider, Resend (email).
+  - Adapter : `DrizzleAdapter(db, { users, accounts, sessions, verificationTokens })`.
+  - Callback `session` ajoute `user.id` dans `session.user`.
+- Entrée/exports NextAuth : `src/server/auth/index.ts`
+  - Exporte `auth()` (lecture de session côté serveur), `handlers` (route API), `signIn`, `signOut`.
+- Route API NextAuth (App Router) : `src/app/api/auth/[...nextauth]/route.ts`
+  - `export const { GET, POST } = handlers;` relie toutes les routes d’auth (signin, callback, signout…).
+
+Tables et schéma (Drizzle)
+- Définies dans `src/server/db/schema.ts` (préfixées `eduhub_`).
+  - users: id (uuid string), name, email (not null), emailVerified, image.
+  - accounts: liaison comptes OAuth, colonnes standard (provider, providerAccountId, tokens…).
+  - sessions: sessionToken, userId, expires.
+  - verification_token: pour le flux email magic link (identifier, token, expires).
+  - L’Adapter NextAuth gère la création/mise à jour de ces enregistrements automatiquement.
+
+Variables d’environnement (validation dans `src/env.js`)
+- AUTH_SECRET (prod requis), AUTH_DISCORD_ID, AUTH_DISCORD_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, AUTH_RESEND_KEY (optionnel), DATABASE_URL, NODE_ENV.
+
+Où la session est utilisée ?
+- Côté serveur (RSC) :
+  - `auth()` depuis `src/server/auth` renvoie la session. Exemples :
+    - `src/app/(app)/layout.tsx` : vérifie la session et redirige sinon.
+    - `src/app/(marketing)/t3/page.tsx` : lit la session pour afficher Sign in/Sign out.
+- tRPC : `src/server/api/trpc.ts`
+  - Contexte tRPC inclut `session` (via `auth()`).
+  - `protectedProcedure` bloque si `ctx.session?.user` est absent (UNAUTHORIZED).
+- Côté client :
+  - Barre de navigation `src/app/_components/navbar/nav-shell.tsx` reçoit `session` (fournie côté serveur par un composant parent) et affiche :
+    - Si connecté : avatar + menu avec « Se déconnecter » vers `/api/auth/signout`.
+    - Si invité : bouton « Se connecter » vers `/api/auth/signin`.
+
+Zone protégée (garde d’accès)
+- `src/app/(app)/layout.tsx` applique une protection globale sur ce segment :
+  - Si `!session?.user` alors `redirect("/api/auth/signin")`.
+  - Tout ce qui vit sous `(app)` nécessite une session valide.
+
+Flux Signin via OAuth (Discord/Google)
+1) L’utilisateur clique sur un lien vers `/api/auth/signin` (ex. navbar).
+2) NextAuth affiche la page de signin par défaut avec la liste des providers (ou démarre directement selon config/session).
+3) Redirection vers le provider (OAuth dance), puis retour via la callback NextAuth.
+4) L’Adapter Drizzle :
+   - Crée l’utilisateur (table `users`) si première connexion.
+   - Crée/maj le lien dans `accounts` pour ce provider.
+   - Crée la `session` et set le cookie de session.
+5) La session côté serveur inclut `user.id` (callback `session`), utilisable dans tRPC et RSC.
+
+Flux Signin via Email (Resend / magic link)
+1) L’utilisateur utilise le provider Email (Resend) depuis la page `/api/auth/signin`.
+2) NextAuth génère un `verification_token` et envoie un email (depuis `from: "eduhub@marcoguzman.fr"`).
+3) L’utilisateur clique le lien de vérification, NextAuth valide le token et crée la session.
+
+Flux Signup
+- Il n’existe PAS de page Signup dédiée dans le repo actuellement.
+- Le « signup » est implicite : la première authentification (OAuth ou Email) crée l’utilisateur en base via l’Adapter.
+- Note : Le hero marketing pointe vers `/signup` (`src/app/(marketing)/_components/hero.tsx`), mais il n’y a pas de page `src/app/(marketing)/signup/page.tsx`. Cette URL renverra 404 tant qu’aucune page n’est créée ou qu’elle ne redirige pas vers `/api/auth/signin`.
+
+Flux Signout
+- Lien direct vers `/api/auth/signout` (ex. navbar). NextAuth supprime la session et nettoie les cookies.
+
+Redirections et pages
+- Signin : URL par défaut NextAuth `GET /api/auth/signin` (UI par défaut fournie par NextAuth). Aucune page custom.
+- Signout : `GET /api/auth/signout` (confirmation/POST géré par NextAuth).
+- Callback providers : gérées automatiquement via `/api/auth/[...nextauth]`.
+- Zone privée : redirection automatique vers `/api/auth/signin` si non connecté (voir `(app)/layout.tsx`).
+
+Points d’extension courants (si on veut évoluer)
+- Créer une page `/signup` personnalisée et la faire soit :
+  - rediriger vers `/api/auth/signin`,
+  - ou fournir un formulaire/email-only avec le provider Email.
+- Définir des pages NextAuth custom : `pages: { signIn: "/signin" }` dans `authConfig` et créer `src/app/signin/page.tsx`.
+- Ajouter des providers (GitHub, etc.) et, si besoin, adapter le schéma (ex: refresh_token_expires_in pour GitHub).
+- Ajouter des claims/roles dans la session via `callbacks` pour l’authorization métier.
+- Interdire des providers selon l’environnement, enrichir les emails Resend, etc.
+
+Références fichiers clés
+- Config NextAuth: `src/server/auth/config.ts`
+- Entrée NextAuth: `src/server/auth/index.ts`
+- Route NextAuth: `src/app/api/auth/[...nextauth]/route.ts`
+- Schéma Drizzle: `src/server/db/schema.ts`
+- Validation env: `src/env.js`
+- Garde d’accès: `src/app/(app)/layout.tsx`
+- Navbar (liens signin/signout): `src/app/_components/navbar/nav-shell.tsx`
+- Lien mort /signup: `src/app/(marketing)/_components/hero.tsx`
+
+Résumé court pour le LLM
+- Auth gérée par NextAuth + Drizzle Adapter. Providers: Discord, Google, Email (Resend).
+- Aucune page custom de signin/signup; on utilise les routes par défaut `/api/auth/signin` et `/api/auth/signout`.
+- La « création de compte » est implicite lors du premier signin via l’Adapter.
+- La zone `(app)` est protégée; on redirige vers signin si pas de session.
+- La session est accessible côté serveur via `auth()` et dans tRPC via `ctx.session`.
