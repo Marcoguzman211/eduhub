@@ -2,24 +2,15 @@ import { Button } from "@heroui/button";
 import BaseInfoSection from "./components/base-info";
 import DescriptionSection from "./components/description-section";
 import LicenseSection from "./components/license-section";
+import FileDropzone from "./components/file-dropzone";
 
 export default function UploadPage() {
   return (
     <div className="min-h-screen">
       <main className="mx-auto grid max-w-screen-xl gap-6 px-4 py-6 md:grid-cols-12">
         <section className="space-y-6 md:col-span-8 lg:col-span-9">
-          <header className="rounded-2xl border">
-            <div
-              aria-label="Zone de dépôt de fichiers"
-              className="flex h-28 items-center justify-center rounded-2xl"
-              role="region"
-            >
-              <div className="text-foreground/70 w-full px-6 py-6 text-center text-sm md:text-base">
-                <span className="font-medium">Zone de dépôt de fichiers</span>
-                <span className="mx-1">•</span> PDF / DOCX / images
-              </div>
-            </div>
-          </header>
+          <FileDropzone />
+
           <section>
             <BaseInfoSection />
           </section>
