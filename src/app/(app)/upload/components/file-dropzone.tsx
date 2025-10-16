@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { Button, Chip } from "~/lib/components/ui";
 import { FiUploadCloud, FiCheck, FiAlertTriangle, FiX } from "react-icons/fi";
 
-type UploadFile = {
-  id: string;
-  file: File;
+import type { FilesChangeHandler, UploadFile } from "../types";
+
+type FileDropzoneProps = {
+  onFilesChange?: FilesChangeHandler;
 };
 
 const ACCEPTED_TYPES = {
@@ -24,34 +25,77 @@ const ALLOWED_EXT = Object.values(ACCEPTED_TYPES)
   .map((ext) => ext.replace(".", "").toUpperCase())
   .join(", ");
 
-export default function FileDropzone() {
+function createUploadFile(file: File): UploadFile {
+  const shouldPreview =
+    file.type === "application/pdf" || file.type.startsWith("image/");
+  return {
+    id: crypto.randomUUID(),
+    file,
+    previewUrl: shouldPreview ? URL.createObjectURL(file) : undefined,
+  };
+}
+
+export default function FileDropzone({ onFilesChange }: FileDropzoneProps) {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [rejections, setRejections] = useState<FileRejection[]>([]);
+  const filesRef = useRef<UploadFile[]>([]);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[], rejected: FileRejection[]) => {
-      setRejections(rejected);
-      if (acceptedFiles.length) {
-        setFiles((prev) => {
-          const existing = new Set(
-            prev.map((item) => `${item.file.name}-${item.file.size}`),
-          );
-          const incoming = acceptedFiles
-            .filter((file) => !existing.has(`${file.name}-${file.size}`))
-            .map((file) => ({
-              id: crypto.randomUUID(),
-              file,
-            }));
-          return [...prev, ...incoming];
-        });
-      }
+  const updateFiles = useCallback(
+    (updater: (prev: UploadFile[]) => UploadFile[]) => {
+      setFiles((prev) => updater(prev));
     },
     [],
   );
 
-  const handleRemove = useCallback((id: string) => {
-    setFiles((prev) => prev.filter((file) => file.id !== id));
+  const revokePreview = useCallback((file: UploadFile) => {
+    if (file.previewUrl) {
+      URL.revokeObjectURL(file.previewUrl);
+    }
   }, []);
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[], rejected: FileRejection[]) => {
+      setRejections(rejected);
+      if (!acceptedFiles.length) return;
+
+      updateFiles((prev) => {
+        const existingKeys = new Set(
+          prev.map((item) => `${item.file.name}-${item.file.size}`),
+        );
+
+        const additions = acceptedFiles
+          .filter((file) => !existingKeys.has(`${file.name}-${file.size}`))
+          .map(createUploadFile);
+
+        return [...prev, ...additions];
+      });
+    },
+    [updateFiles],
+  );
+
+  useEffect(() => {
+    return () => {
+      filesRef.current.forEach(revokePreview);
+    };
+  }, [revokePreview]);
+
+  useEffect(() => {
+    filesRef.current = files;
+    onFilesChange?.(files);
+  }, [files, onFilesChange]);
+
+  const handleRemove = useCallback(
+    (id: string) => {
+      updateFiles((prev) => {
+        const target = prev.find((file) => file.id === id);
+        if (target) {
+          revokePreview(target);
+        }
+        return prev.filter((file) => file.id !== id);
+      });
+    },
+    [revokePreview, updateFiles],
+  );
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     accept: ACCEPTED_TYPES,
