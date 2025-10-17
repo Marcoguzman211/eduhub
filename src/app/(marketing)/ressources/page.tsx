@@ -1,9 +1,39 @@
 import RessourcesFilter from "./components/filter";
-import { ResourceCard } from "./components/ressource-card";
+import {
+  ResourceCard,
+  type ResourceCardProps,
+} from "./components/ressource-card";
 import ResourceToolbar from "./components/toolbar";
-import { items } from "./mock-data/ressources-list-data";
+import { db } from "~/server/db";
+import type { ResourceLanguage } from "~/shared/resource";
 
-export default function ResourcesPage() {
+async function loadResources(): Promise<ResourceCardProps[]> {
+  const resources = await db.query.resources.findMany({
+    orderBy: (resource, { desc }) => desc(resource.createdAt),
+    with: { author: true },
+  });
+
+  return resources.map((resource) => ({
+    id: resource.id,
+    title: resource.title,
+    resourceType: resource.resourceType,
+    subject: resource.subject,
+    level: resource.level,
+    durationMinutes: resource.durationMinutes,
+    language: resource.language
+      ? (resource.language as ResourceLanguage)
+      : null,
+    license: resource.license,
+    description: resource.description,
+    fileMetadata: resource.fileMetadata,
+    createdAt: resource.createdAt.toISOString(),
+    authorName: resource.author?.name ?? resource.author?.email ?? null,
+  }));
+}
+
+export default async function ResourcesPage() {
+  const items = await loadResources();
+
   return (
     <div className="flex flex-col gap-6 p-4 lg:flex-row">
       {/* Filters */}
@@ -20,9 +50,13 @@ export default function ResourcesPage() {
         {/* Results */}
         <section className="flex-2/3 rounded-md bg-gray-100 p-4">
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 p-4 md:grid-cols-3">
-            {items.map((item, i) => (
-              <ResourceCard key={i} {...item} />
-            ))}
+            {items.length === 0 ? (
+              <p className="text-center text-sm text-gray-500">
+                Aucune ressource pour le moment.
+              </p>
+            ) : (
+              items.map((item) => <ResourceCard key={item.id} {...item} />)
+            )}
           </div>
         </section>
       </main>
