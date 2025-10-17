@@ -8,6 +8,20 @@
       "when": 1755878037204,
       "tag": "0000_overjoyed_proteus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1755878038204,
+      "tag": "0001_create_resource",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760686669582,
+      "tag": "0002_broken_zuras",
+      "breakpoints": true
     }
   ]
 }

@@ -9,6 +9,7 @@ import type { FilesChangeHandler, UploadFile } from "../types";
 
 type FileDropzoneProps = {
   onFilesChange?: FilesChangeHandler;
+  errorMessage?: string;
 };
 
 const ACCEPTED_TYPES = {
@@ -35,7 +36,10 @@ function createUploadFile(file: File): UploadFile {
   };
 }
 
-export default function FileDropzone({ onFilesChange }: FileDropzoneProps) {
+export default function FileDropzone({
+  onFilesChange,
+  errorMessage,
+}: FileDropzoneProps) {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [rejections, setRejections] = useState<FileRejection[]>([]);
   const filesRef = useRef<UploadFile[]>([]);
@@ -138,6 +142,9 @@ export default function FileDropzone({ onFilesChange }: FileDropzoneProps) {
           Choisir des fichiers
         </Button>
       </div>
+      {errorMessage ? (
+        <p className="text-danger text-sm">{errorMessage}</p>
+      ) : null}
 
       {files.length > 0 && (
         <div className="bg-foreground/5 rounded-2xl px-4 py-3">
