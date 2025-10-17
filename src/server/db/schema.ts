@@ -1,5 +1,12 @@
 import { relations, sql } from "drizzle-orm";
-import { index, pgTableCreator, primaryKey } from "drizzle-orm/pg-core";
+import { index, jsonb, pgTableCreator, primaryKey } from "drizzle-orm/pg-core";
+import type {
+  ResourceFileMetadata,
+  ResourceLevel,
+  ResourceLicense,
+  ResourceSubject,
+  ResourceType,
+} from "~/shared/resource";
 import { type AdapterAccount } from "next-auth/adapters";
 
 /**
@@ -48,8 +55,51 @@ export const users = createTable("user", (d) => ({
   image: d.varchar({ length: 255 }),
 }));
 
+export const resources = createTable(
+  "resource",
+  (d) => ({
+    id: d
+      .varchar({ length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    title: d.varchar({ length: 140 }).notNull(),
+    resourceType: d.varchar({ length: 32 }).$type<ResourceType>().notNull(),
+    subject: d.varchar({ length: 64 }).$type<ResourceSubject>().notNull(),
+    level: d.varchar({ length: 32 }).$type<ResourceLevel>().notNull(),
+    durationMinutes: d.integer(),
+    language: d.varchar({ length: 32 }),
+    description: d.text().notNull(),
+    objective: d.text(),
+    license: d.varchar({ length: 32 }).$type<ResourceLicense>().notNull(),
+    allowComments: d.boolean().notNull().default(true),
+    allowAdaptations: d.boolean().notNull().default(true),
+    fileMetadata: jsonb("file_metadata")
+      .$type<ResourceFileMetadata[]>()
+      .notNull(),
+    createdById: d
+      .varchar({ length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [index("resource_created_by_idx").on(t.createdById)],
+);
+
+export const resourcesRelations = relations(resources, ({ one }) => ({
+  author: one(users, {
+    fields: [resources.createdById],
+    references: [users.id],
+  }),
+}));
+
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  resources: many(resources),
 }));
 
 export const accounts = createTable(
