@@ -1,6 +1,20 @@
 "use client";
 
 import { Checkbox, Slider, Divider } from "~/lib/components/ui";
+import {
+  resourceLanguages,
+  resourceLevels,
+  resourceLicenses,
+  resourceSubjects,
+  resourceTypes,
+} from "~/shared/resource";
+import {
+  resourceLanguageLabels,
+  resourceLevelLabels,
+  resourceLicenseLabels,
+  resourceSubjectLabels,
+  resourceTypeLabels,
+} from "~/shared/resource-labels";
 
 export default function RessourcesFilter() {
   return (
@@ -17,24 +31,16 @@ export default function RessourcesFilter() {
           <span className="text-xs">⌄</span>
         </h3>
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Checkbox>Français</Checkbox>
-            <span className="bg-default-100 rounded-md px-2 py-0.5 text-xs">
-              342
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <Checkbox>Littérature</Checkbox>
-            <span className="bg-default-100 rounded-md px-2 py-0.5 text-xs">
-              156
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <Checkbox>Grammaire</Checkbox>
-            <span className="bg-default-100 rounded-md px-2 py-0.5 text-xs">
-              89
-            </span>
-          </div>
+          {resourceSubjects.map((subject) => (
+            <div key={subject} className="flex items-center justify-between">
+              <Checkbox value={subject}>
+                {resourceSubjectLabels[subject]}
+              </Checkbox>
+              <span className="bg-default-100 rounded-md px-2 py-0.5 text-xs">
+                —
+              </span>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -45,9 +51,11 @@ export default function RessourcesFilter() {
           <span className="text-xs">⌄</span>
         </h3>
         <div className="space-y-2">
-          <Checkbox>CP</Checkbox>
-          <Checkbox>CE1</Checkbox>
-          <Checkbox>CE2</Checkbox>
+          {resourceLevels.map((level) => (
+            <Checkbox key={level} value={level}>
+              {resourceLevelLabels[level]}
+            </Checkbox>
+          ))}
         </div>
       </section>
 
@@ -58,9 +66,41 @@ export default function RessourcesFilter() {
           <span className="text-xs">⌄</span>
         </h3>
         <div className="space-y-2">
-          <Checkbox>Fiche d&apos;activité</Checkbox>
-          <Checkbox>Séquence</Checkbox>
-          <Checkbox>Comptine</Checkbox>
+          {resourceTypes.map((type) => (
+            <Checkbox key={type} value={type}>
+              {resourceTypeLabels[type]}
+            </Checkbox>
+          ))}
+        </div>
+      </section>
+
+      <Divider />
+      <section className="space-y-3">
+        <h3 className="flex items-center justify-between text-sm font-medium">
+          <span>Langues</span>
+          <span className="text-xs">⌄</span>
+        </h3>
+        <div className="space-y-2">
+          {resourceLanguages.map((language) => (
+            <Checkbox key={language} value={language}>
+              {resourceLanguageLabels[language]}
+            </Checkbox>
+          ))}
+        </div>
+      </section>
+
+      <Divider />
+      <section className="space-y-3">
+        <h3 className="flex items-center justify-between text-sm font-medium">
+          <span>Licences</span>
+          <span className="text-xs">⌄</span>
+        </h3>
+        <div className="space-y-2">
+          {resourceLicenses.map((license) => (
+            <Checkbox key={license} value={license}>
+              {resourceLicenseLabels[license]}
+            </Checkbox>
+          ))}
         </div>
       </section>
 

@@ -1,6 +1,11 @@
 "use client";
 import { Input, Button, Select, SelectItem, Chip } from "~/lib/components/ui";
 import { FiSearch, FiGrid, FiList, FiPlus, FiX } from "react-icons/fi";
+import { resourceLevels, resourceSubjects } from "~/shared/resource";
+import {
+  resourceLevelLabels,
+  resourceSubjectLabels,
+} from "~/shared/resource-labels";
 
 export default function ResourceToolbar() {
   return (
@@ -53,6 +58,11 @@ export default function ResourceToolbar() {
           placeholder="Toutes matières"
         >
           <SelectItem key="all-subjects">Toutes matières</SelectItem>
+          {resourceSubjects.map((subject) => (
+            <SelectItem key={subject}>
+              {resourceSubjectLabels[subject]}
+            </SelectItem>
+          ))}
         </Select>
 
         <Select
@@ -64,6 +74,9 @@ export default function ResourceToolbar() {
           placeholder="Tous niveaux"
         >
           <SelectItem key="all-levels">Tous niveaux</SelectItem>
+          {resourceLevels.map((level) => (
+            <SelectItem key={level}>{resourceLevelLabels[level]}</SelectItem>
+          ))}
         </Select>
 
         <Select
@@ -87,7 +100,7 @@ export default function ResourceToolbar() {
                 </button>
               }
             >
-              Français
+              {resourceSubjectLabels.fr}
             </Chip>
             <button className="text-primary hover:underline">
               Effacer tout
@@ -131,7 +144,7 @@ export default function ResourceToolbar() {
             </button>
           }
         >
-          Français
+          {resourceSubjectLabels.fr}
         </Chip>
         <button className="text-primary hover:underline">Effacer tout</button>
       </div>
