@@ -12,42 +12,97 @@ import {
 } from "~/lib/components/ui";
 import Image from "next/image";
 import {
-  LuStar as Star,
-  LuDownload as Download,
   LuClock as Clock,
-  LuBookmark as Bookmark,
+  LuFileText as FileText,
+  LuGlobe as Globe,
   LuShare2 as Share2,
+  LuShieldCheck as ShieldCheck,
 } from "react-icons/lu";
 import type { FC } from "react";
+import type {
+  ResourceFileMetadata,
+  ResourceLanguage,
+  ResourceLevel,
+  ResourceLicense,
+  ResourceSubject,
+  ResourceType,
+} from "~/shared/resource";
 
 export type ResourceCardProps = {
+  id: string;
   title: string;
-  subject: string;
-  level: string;
-  rating: number;
-  reviewsCount: number;
-  downloads: number;
-  durationMin: number;
-  author: string;
-  postedAgo: string;
-  fileType: "PDF" | "DOCX" | "PPTX";
-  thumbnailUrl: string;
+  resourceType: ResourceType;
+  subject: ResourceSubject;
+  level: ResourceLevel;
+  durationMinutes: number | null;
+  language: ResourceLanguage | null;
+  license: ResourceLicense;
+  description: string;
+  fileMetadata: ResourceFileMetadata[];
+  createdAt: string;
+  authorName: string | null;
 };
+
+const PLACEHOLDER_THUMBNAILS: Record<ResourceType, string> = {
+  fiche: "/ressources/placeholder-1.png",
+  video: "/ressources/placeholder-2.png",
+  cours: "/ressources/placeholder-3.png",
+};
+
+function formatRelativeDate(isoDate: string): string {
+  const parsed = new Date(isoDate);
+  if (Number.isNaN(parsed.getTime())) {
+    return "Date inconnue";
+  }
+
+  const diffMs = Date.now() - parsed.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  if (diffMinutes < 1) return "À l'instant";
+  if (diffMinutes < 60) return `il y a ${diffMinutes} min`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) return `il y a ${diffHours} h`;
+
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 30) return `il y a ${diffDays} j`;
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    dateStyle: "medium",
+  }).format(parsed);
+}
+
+function extractFileLabel(file: ResourceFileMetadata | undefined): string {
+  if (!file) return "FICHIER";
+
+  const extension = file.name.split(".").pop();
+  if (extension) return extension.toUpperCase();
+
+  const mimeType = file.type.split("/").pop();
+  if (mimeType) return mimeType.toUpperCase();
+
+  return "FICHIER";
+}
 
 export const ResourceCard: FC<ResourceCardProps> = (props) => {
   const {
     title,
+    resourceType,
     subject,
     level,
-    rating,
-    reviewsCount,
-    downloads,
-    durationMin,
-    author,
-    postedAgo,
-    fileType,
-    thumbnailUrl,
+    durationMinutes,
+    language,
+    license,
+    description,
+    fileMetadata,
+    createdAt,
+    authorName,
   } = props;
+
+  const primaryFile = fileMetadata[0];
+  const fileLabel = extractFileLabel(primaryFile);
+  const filesCount = fileMetadata.length;
+  const relativeDate = formatRelativeDate(createdAt);
+  const thumbnailUrl = PLACEHOLDER_THUMBNAILS[resourceType];
 
   return (
     <Card
@@ -66,7 +121,7 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
           />
           <div className="absolute top-3 left-3 z-20">
             <Badge className="pointer-events-none rounded-full bg-red-500 px-2 py-1 text-xs font-semibold text-white shadow-md">
-              {fileType}
+              {fileLabel}
             </Badge>
           </div>
         </div>
@@ -87,23 +142,42 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
             >
               {level}
             </Chip>
+            <Chip
+              size="sm"
+              className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-200"
+            >
+              {resourceType}
+            </Chip>
           </div>
         </CardHeader>
 
         <CardBody className="p-4 pt-0">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-gray-700 dark:text-gray-300">
+          <p className="line-clamp-3 text-sm text-gray-600 dark:text-gray-300">
+            {description}
+          </p>
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-gray-700 dark:text-gray-300">
+            {typeof durationMinutes === "number" ? (
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                <span>{durationMinutes} min</span>
+              </div>
+            ) : null}
+            {language ? (
+              <div className="flex items-center gap-1">
+                <Globe className="h-4 w-4" />
+                <span>{language.toUpperCase()}</span>
+              </div>
+            ) : null}
             <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-current" />
-              <span className="font-medium">{rating.toFixed(1)}</span>
-              <span className="opacity-70">({reviewsCount})</span>
+              <ShieldCheck className="h-4 w-4" />
+              <span>{license.toUpperCase()}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Download className="h-4 w-4" />
-              <span>{downloads}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              <span>{durationMin} min</span>
+              <FileText className="h-4 w-4" />
+              <span>
+                {filesCount} fichier{filesCount > 1 ? "s" : ""}
+              </span>
             </div>
           </div>
         </CardBody>
@@ -112,16 +186,15 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
           <div className="flex items-center gap-2">
             <Avatar radius="full" className="h-6 w-6" />
             <div className="text-xs text-gray-600 dark:text-gray-300">
-              <span className="font-medium">{author}</span>
+              <span className="font-medium">
+                {authorName ?? "Auteur inconnu"}
+              </span>
               <span className="px-1">•</span>
-              <span>{postedAgo}</span>
+              <span>{relativeDate}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Button isIconOnly variant="light" className="rounded-xl">
-              <Bookmark className="h-5 w-5" />
-            </Button>
             <Button isIconOnly variant="light" className="rounded-xl">
               <Share2 className="h-5 w-5" />
             </Button>
@@ -149,7 +222,7 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
             />
             <div className="absolute top-1 left-1 z-20">
               <Chip className="pointer-events-none rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-white">
-                {fileType}
+                {fileLabel}
               </Chip>
             </div>
           </div>
@@ -171,34 +244,47 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
               >
                 {subject}
               </Chip>
+              <Chip
+                size="sm"
+                className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-200"
+              >
+                {resourceType}
+              </Chip>
             </div>
 
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-700 dark:text-gray-300">
+              {typeof durationMinutes === "number" ? (
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5" />
+                  <span>{durationMinutes} min</span>
+                </div>
+              ) : null}
+              {language ? (
+                <div className="flex items-center gap-1">
+                  <Globe className="h-3.5 w-3.5" />
+                  <span>{language.toUpperCase()}</span>
+                </div>
+              ) : null}
               <div className="flex items-center gap-1">
-                <Star className="h-3.5 w-3.5 fill-current" />
-                <span className="font-medium">{rating.toFixed(1)}</span>
-                <span className="opacity-70">({reviewsCount})</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Download className="h-3.5 w-3.5" />
-                <span>{downloads}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5" />
-                <span>{durationMin} min</span>
+                <FileText className="h-3.5 w-3.5" />
+                <span>
+                  {filesCount} fichier{filesCount > 1 ? "s" : ""}
+                </span>
               </div>
             </div>
 
             <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
               <Avatar radius="full" className="h-5 w-5" />
-              <span className="truncate font-medium">{author}</span>
-              <span className="opacity-70">• {postedAgo}</span>
+              <span className="truncate font-medium">
+                {authorName ?? "Auteur inconnu"}
+              </span>
+              <span className="opacity-70">• {relativeDate}</span>
             </div>
           </div>
 
           <div className="self-center">
             <Button isIconOnly color="primary" className="rounded-xl">
-              <Download className="h-5 w-5" />
+              <Share2 className="h-5 w-5" />
             </Button>
           </div>
         </div>
