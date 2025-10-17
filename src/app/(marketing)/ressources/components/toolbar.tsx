@@ -1,8 +1,36 @@
 "use client";
 import { Input, Button, Select, SelectItem, Chip } from "~/lib/components/ui";
 import { FiSearch, FiGrid, FiList, FiPlus, FiX } from "react-icons/fi";
+import { resourceLevels, resourceSubjects } from "~/shared/resource";
+import {
+  resourceLevelLabels,
+  resourceSubjectLabels,
+} from "~/shared/resource-labels";
+
+type SelectOption = {
+  key: string;
+  label: string;
+};
 
 export default function ResourceToolbar() {
+  const ALL_SUBJECTS_KEY = "all-subjects";
+  const ALL_LEVELS_KEY = "all-levels";
+
+  const subjectOptions: SelectOption[] = [
+    { key: ALL_SUBJECTS_KEY, label: "Toutes matières" },
+    ...resourceSubjects.map((subject) => ({
+      key: subject,
+      label: resourceSubjectLabels[subject],
+    })),
+  ];
+  const levelOptions: SelectOption[] = [
+    { key: ALL_LEVELS_KEY, label: "Tous niveaux" },
+    ...resourceLevels.map((level) => ({
+      key: level,
+      label: resourceLevelLabels[level],
+    })),
+  ];
+
   return (
     <section className="border-default-200 bg-content1 w-full rounded-2xl border p-3 sm:p-4">
       <div className="grid grid-cols-12 items-center gap-3">
@@ -49,10 +77,15 @@ export default function ResourceToolbar() {
           className="col-span-1 md:col-span-3"
           radius="full"
           size="lg"
-          defaultSelectedKeys={["all-subjects"]}
+          defaultSelectedKeys={[ALL_SUBJECTS_KEY]}
           placeholder="Toutes matières"
+          items={subjectOptions}
         >
-          <SelectItem key="all-subjects">Toutes matières</SelectItem>
+          {(item) => (
+            <SelectItem key={item.key} textValue={item.label}>
+              {item.label}
+            </SelectItem>
+          )}
         </Select>
 
         <Select
@@ -60,10 +93,15 @@ export default function ResourceToolbar() {
           className="col-span-1 md:col-span-3"
           radius="full"
           size="lg"
-          defaultSelectedKeys={["all-levels"]}
+          defaultSelectedKeys={[ALL_LEVELS_KEY]}
           placeholder="Tous niveaux"
+          items={levelOptions}
         >
-          <SelectItem key="all-levels">Tous niveaux</SelectItem>
+          {(item) => (
+            <SelectItem key={item.key} textValue={item.label}>
+              {item.label}
+            </SelectItem>
+          )}
         </Select>
 
         <Select
@@ -87,7 +125,7 @@ export default function ResourceToolbar() {
                 </button>
               }
             >
-              Français
+              {resourceSubjectLabels.fr}
             </Chip>
             <button className="text-primary hover:underline">
               Effacer tout
@@ -131,7 +169,7 @@ export default function ResourceToolbar() {
             </button>
           }
         >
-          Français
+          {resourceSubjectLabels.fr}
         </Chip>
         <button className="text-primary hover:underline">Effacer tout</button>
       </div>

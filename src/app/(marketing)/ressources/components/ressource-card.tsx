@@ -27,6 +27,13 @@ import type {
   ResourceSubject,
   ResourceType,
 } from "~/shared/resource";
+import {
+  getResourceLanguageLabel,
+  getResourceLevelLabel,
+  getResourceLicenseLabel,
+  getResourceSubjectLabel,
+  getResourceTypeLabel,
+} from "~/shared/resource-labels";
 
 export type ResourceCardProps = {
   id: string;
@@ -103,6 +110,12 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
   const filesCount = fileMetadata.length;
   const relativeDate = formatRelativeDate(createdAt);
   const thumbnailUrl = PLACEHOLDER_THUMBNAILS[resourceType];
+  const subjectLabel = getResourceSubjectLabel(subject);
+  const levelLabel = getResourceLevelLabel(level);
+  const resourceTypeLabel = getResourceTypeLabel(resourceType);
+  const languageLabel =
+    language !== null ? getResourceLanguageLabel(language) : null;
+  const licenseLabel = getResourceLicenseLabel(license);
 
   return (
     <Card
@@ -134,19 +147,19 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
               size="sm"
               className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
             >
-              {subject}
+              {subjectLabel}
             </Chip>
             <Chip
               size="sm"
               className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-200"
             >
-              {level}
+              {levelLabel}
             </Chip>
             <Chip
               size="sm"
               className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-200"
             >
-              {resourceType}
+              {resourceTypeLabel}
             </Chip>
           </div>
         </CardHeader>
@@ -163,15 +176,15 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
                 <span>{durationMinutes} min</span>
               </div>
             ) : null}
-            {language ? (
+            {languageLabel ? (
               <div className="flex items-center gap-1">
                 <Globe className="h-4 w-4" />
-                <span>{language.toUpperCase()}</span>
+                <span>{languageLabel}</span>
               </div>
             ) : null}
             <div className="flex items-center gap-1">
               <ShieldCheck className="h-4 w-4" />
-              <span>{license.toUpperCase()}</span>
+              <span>{licenseLabel}</span>
             </div>
             <div className="flex items-center gap-1">
               <FileText className="h-4 w-4" />
@@ -236,19 +249,19 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
                 size="sm"
                 className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
               >
-                {level}
+                {levelLabel}
               </Chip>
               <Chip
                 size="sm"
                 className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-200"
               >
-                {subject}
+                {subjectLabel}
               </Chip>
               <Chip
                 size="sm"
                 className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-200"
               >
-                {resourceType}
+                {resourceTypeLabel}
               </Chip>
             </div>
 
@@ -259,10 +272,10 @@ export const ResourceCard: FC<ResourceCardProps> = (props) => {
                   <span>{durationMinutes} min</span>
                 </div>
               ) : null}
-              {language ? (
+              {languageLabel ? (
                 <div className="flex items-center gap-1">
                   <Globe className="h-3.5 w-3.5" />
-                  <span>{language.toUpperCase()}</span>
+                  <span>{languageLabel}</span>
                 </div>
               ) : null}
               <div className="flex items-center gap-1">
