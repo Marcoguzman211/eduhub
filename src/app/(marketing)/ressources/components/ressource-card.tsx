@@ -34,21 +34,7 @@ import {
   getResourceSubjectLabel,
   getResourceTypeLabel,
 } from "~/shared/resource-labels";
-
-export type ResourceCardProps = {
-  id: string;
-  title: string;
-  resourceType: ResourceType;
-  subject: ResourceSubject;
-  level: ResourceLevel;
-  durationMinutes: number | null;
-  language: ResourceLanguage | null;
-  license: ResourceLicense;
-  description: string;
-  fileMetadata: ResourceFileMetadata[];
-  createdAt: string;
-  authorName: string | null;
-};
+import type { ResourceCardProps } from "~/shared/resource-card";
 
 const PLACEHOLDER_THUMBNAILS: Record<ResourceType, string> = {
   fiche: "/ressources/placeholder-1.png",

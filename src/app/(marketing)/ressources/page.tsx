@@ -1,11 +1,11 @@
 import RessourcesFilter from "./components/filter";
-import {
-  ResourceCard,
-  type ResourceCardProps,
-} from "./components/ressource-card";
+import { ResourceCard } from "./components/ressource-card";
 import ResourceToolbar from "./components/toolbar";
 import { db } from "~/server/db";
-import type { ResourceLanguage } from "~/shared/resource";
+import {
+  toResourceCardProps,
+  type ResourceCardProps,
+} from "~/shared/resource-card";
 
 async function loadResources(): Promise<ResourceCardProps[]> {
   const resources = await db.query.resources.findMany({
@@ -13,22 +13,7 @@ async function loadResources(): Promise<ResourceCardProps[]> {
     with: { author: true },
   });
 
-  return resources.map((resource) => ({
-    id: resource.id,
-    title: resource.title,
-    resourceType: resource.resourceType,
-    subject: resource.subject,
-    level: resource.level,
-    durationMinutes: resource.durationMinutes,
-    language: resource.language
-      ? (resource.language as ResourceLanguage)
-      : null,
-    license: resource.license,
-    description: resource.description,
-    fileMetadata: resource.fileMetadata,
-    createdAt: resource.createdAt.toISOString(),
-    authorName: resource.author?.name ?? resource.author?.email ?? null,
-  }));
+  return resources.map(toResourceCardProps);
 }
 
 export default async function ResourcesPage() {
